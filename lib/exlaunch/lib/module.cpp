@@ -1,6 +1,5 @@
 #include "common.hpp"
-
-#include "program/setting.hpp"
+#include "setting.hpp"
 
 struct ModuleName {
     int unknown;

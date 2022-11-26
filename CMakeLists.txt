@@ -18,14 +18,21 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/module/subsdk9.json.template ${CMAKE_
 
 ## Project sources
 include_directories(${PROJECT_SOURCE_DIR}/src/)
-include_directories(${PROJECT_SOURCE_DIR}/src/lib/)
 include_directories(${PROJECT_SOURCE_DIR}/include/)
+include_directories(${PROJECT_SOURCE_DIR}/lib/exlaunch/)
+include_directories(${PROJECT_SOURCE_DIR}/lib/exlaunch/lib/)
 include_directories(${PROJECT_SOURCE_DIR}/lib/sead/include/)
 include_directories(${PROJECT_SOURCE_DIR}/lib/NintendoSDK/include/)
-file(GLOB_RECURSE SOURCES_ASM ${PROJECT_SOURCE_DIR}/src/*.s)
-file(GLOB_RECURSE SOURCES_H ${PROJECT_SOURCE_DIR}/src/*.h ${PROJECT_SOURCE_DIR}/src/*.hpp)
-file(GLOB_RECURSE SOURCES_CXX ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.c)
-file(GLOB_RECURSE LOCAL_LIBRARIES ${PROJECT_SOURCE_DIR}/src/*.a)
+file(GLOB_RECURSE SRC_SOURCES_ASM ${PROJECT_SOURCE_DIR}/src/*.s)
+file(GLOB_RECURSE SRC_SOURCES_H ${PROJECT_SOURCE_DIR}/src/*.h ${PROJECT_SOURCE_DIR}/src/*.hpp)
+file(GLOB_RECURSE SRC_SOURCES_CXX ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.c)
+file(GLOB_RECURSE SRC_LOCAL_LIBRARIES ${PROJECT_SOURCE_DIR}/src/*.a)
+
+## exlaunch sources
+file(GLOB_RECURSE LIB_SOURCES_ASM ${PROJECT_SOURCE_DIR}/lib/exlaunch/*.s)
+file(GLOB_RECURSE LIB_SOURCES_H ${PROJECT_SOURCE_DIR}/lib/exlaunch/*.h ${PROJECT_SOURCE_DIR}/lib/exlaunch/*.hpp)
+file(GLOB_RECURSE LIB_SOURCES_CXX ${PROJECT_SOURCE_DIR}/lib/exlaunch/*.cpp ${PROJECT_SOURCE_DIR}/lib/exlaunch/*.c)
+file(GLOB_RECURSE LIB_LOCAL_LIBRARIES ${PROJECT_SOURCE_DIR}/lib/exlaunch/*.a)
 
 ## Include nx tools
 include(${CMAKE_SOURCE_DIR}/cmake/SwitchTools.cmake)
@@ -33,10 +40,10 @@ include(${CMAKE_SOURCE_DIR}/cmake/SwitchTools.cmake)
 ## subsdk9
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-#set_source_files_properties(${SOURCES_CXX} PROPERTIES LANGUAGE CXX)
-add_executable(subsdk9 ${SOURCES_ASM} ${SOURCES_C} ${SOURCES_H} ${SOURCES_CXX})
+#set_source_files_properties(${SRC_SOURCES_CXX} ${LIB_SOURCES_CXX} PROPERTIES LANGUAGE CXX)
+add_executable(subsdk9 ${SRC_SOURCES_ASM} ${LIB_SOURCES_ASM} ${SRC_SOURCES_C} ${LIB_SOURCES_C} ${SRC_SOURCES_H} ${LIB_SOURCES_H} ${SRC_SOURCES_CXX} ${LIB_SOURCES_CXX})
 add_compile_definitions(EXL_LOAD_KIND=Module EXL_LOAD_KIND_ENUM=EXL_LOAD_KIND_MODULE)
-target_link_libraries(subsdk9 ${LOCAL_LIBRARIES})
+target_link_libraries(subsdk9 ${SRC_LOCAL_LIBRARIES} ${LIB_LOCAL_LIBRARIES})
 
 ## Prepare subsdk ld
 set(SUBSDK_LD_PATH ${CMAKE_CURRENT_SOURCE_DIR}/module/subsdk9.ld)
